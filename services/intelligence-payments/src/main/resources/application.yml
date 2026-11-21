@@ -1,0 +1,30 @@
+server:
+  port: ${PORT:8080}
+  shutdown: graceful
+
+spring:
+  application:
+    name: mowistore-intelligence-payments
+  lifecycle:
+    timeout-per-shutdown-phase: 20s
+  jackson:
+    default-property-inclusion: non_null
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      probes:
+        enabled: true
+
+mowistore:
+  core-api-url: ${CORE_API_URL:http://localhost:8000}
+  core-service-token: ${CORE_SERVICE_TOKEN:}
+  stripe-secret-key: ${STRIPE_SECRET_KEY:}
+  stripe-webhook-secret: ${STRIPE_WEBHOOK_SECRET:}
+  gemini-api-key: ${GEMINI_API_KEY:}
+  gemini-model: ${GEMINI_MODEL:gemini-2.0-flash}
+  currency: ${PAYMENT_CURRENCY:pen}
