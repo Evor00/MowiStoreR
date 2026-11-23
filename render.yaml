@@ -53,6 +53,6 @@ services:
 databases:
   - name: mowistore-postgres
     region: oregon
-    plan: 0.1c-256mb
+    plan: free
     databaseName: mowistore
     user: mowistore
