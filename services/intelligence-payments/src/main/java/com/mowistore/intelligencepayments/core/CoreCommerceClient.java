@@ -19,7 +19,14 @@ public class CoreCommerceClient {
 
     public CoreCommerceClient(MowiStoreProperties properties) {
         this.properties = properties;
-        this.client = RestClient.builder().baseUrl(properties.getCoreApiUrl()).build();
+        this.client = RestClient.builder().baseUrl(normalizeBaseUrl(properties.getCoreApiUrl())).build();
+    }
+
+    private String normalizeBaseUrl(String url) {
+        if (!StringUtils.hasText(url)) {
+            throw new IllegalStateException("CORE_API_URL no está configurado.");
+        }
+        return url.startsWith("http://") || url.startsWith("https://") ? url : "http://" + url;
     }
 
     public CoreOrder getOrder(String reference, String authorization) {

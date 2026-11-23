@@ -1,0 +1,58 @@
+services:
+  - type: web
+    runtime: docker
+    name: mowistore-core-api
+    region: oregon
+    plan: free
+    dockerfilePath: ./services/core-api/Dockerfile
+    dockerContext: ./services/core-api
+    healthCheckPath: /api/v1/health/
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: mowistore-postgres
+          property: connectionString
+      - key: DJANGO_ENV
+        value: production
+      - key: DJANGO_DEBUG
+        value: "False"
+      - key: DATABASE_SSL_REQUIRE
+        value: "False"
+      - key: DJANGO_SECRET_KEY
+        generateValue: true
+      - key: INTERNAL_SERVICE_TOKEN
+        generateValue: true
+      - key: DJANGO_ALLOWED_HOSTS
+        fromService:
+          type: web
+          name: mowistore-core-api
+          envVarKey: RENDER_EXTERNAL_HOSTNAME
+
+  - type: web
+    runtime: docker
+    name: mowistore-intelligence-payments
+    region: oregon
+    plan: free
+    dockerfilePath: ./services/intelligence-payments/Dockerfile
+    dockerContext: ./services/intelligence-payments
+    healthCheckPath: /actuator/health
+    envVars:
+      - key: CORE_API_URL
+        fromService:
+          type: web
+          name: mowistore-core-api
+          property: hostport
+      - key: CORE_SERVICE_TOKEN
+        fromService:
+          type: web
+          name: mowistore-core-api
+          envVarKey: INTERNAL_SERVICE_TOKEN
+      - key: PAYMENT_CURRENCY
+        value: pen
+
+databases:
+  - name: mowistore-postgres
+    region: oregon
+    plan: 0.1c-256mb
+    databaseName: mowistore
+    user: mowistore
