@@ -9,9 +9,7 @@ services:
     healthCheckPath: /api/v1/health/
     envVars:
       - key: DATABASE_URL
-        fromDatabase:
-          name: mowistore-postgres
-          property: connectionString
+        sync: false
       - key: DJANGO_ENV
         value: production
       - key: DJANGO_DEBUG
@@ -49,10 +47,3 @@ services:
           envVarKey: INTERNAL_SERVICE_TOKEN
       - key: PAYMENT_CURRENCY
         value: pen
-
-databases:
-  - name: mowistore-postgres
-    region: oregon
-    plan: free
-    databaseName: mowistore
-    user: mowistore
